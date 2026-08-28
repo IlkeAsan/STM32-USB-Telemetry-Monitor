@@ -17,7 +17,11 @@ Bilgisayar bu verileri STM32'ye geri gönderir, STM32 ise bu verileri alıp hari
 🛠️ 2. Kullanılan Donanım ve "Çift USB" Bağlantı Mimarisi
 Mikrodenetleyici: STM32 Nucleo-144 (NUCLEO-F439ZI)
 Gösterge: 16x2 Karakter LCD ve PCF8574 I2C Genişletici.
-
+<br>
+<p align="center">
+  <img src="https://github.com/IlkeAsan/STM32-USB-Telemetry-Monitor/blob/main/images/Ekran%20g%C3%B6r%C3%BCnt%C3%BCs%C3%BC%202026-08-28%20093037.png" width="46%" />
+</p>
+<br>
 ⚠️ Kritik Donanım Detayı: Çift USB Portu Kullanımı
 STM32 Nucleo-144 kartları üzerinde iki adet USB portu bulunur ve bu proje için her ikisinin de rolü farklıdır:
 

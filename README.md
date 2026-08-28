@@ -1,7 +1,7 @@
 🔌 STM32 Composite USB: Otonom Telemetri Monitörü (HID + CDC)
 STM32USBPythonC
 
-Bu proje, bilgisayara takıldığı anda otonom olarak (kendi kendine) klavye gibi davranarak bir Python betiği yazan, ardından bilgisayarın RAM ve CPU verilerini okuyarak yine aynı USB kablosu üzerinden seri port (CDC) aracılığıyla mikrodenetleyiciye geri gönderen çift yönlü bir Composite USB (HID Klavye + Sanal Seri Port) projesidir.
+Bu proje, bilgisayara takıldığı anda otonom olarak klavye gibi davranarak bir Python betiği yazan, ardından bilgisayarın RAM ve CPU verilerini okuyarak yine aynı USB kablosu üzerinden seri port (CDC) aracılığıyla mikrodenetleyiciye geri gönderen çift yönlü bir Composite USB (HID Klavye + Sanal Seri Port) projesidir.
 
 📖 1. Projenin Amacı ve Özeti
 Bir donanımın (mikrodenetleyici) bilgisayara takıldığı anda hiçbir harici yazılıma veya sürücüye ihtiyaç duymadan (Plug & Play) bilgisayarın donanım sensörlerine ulaşıp ulaşamayacağını kanıtlamak amacıyla geliştirilmiştir.
@@ -13,9 +13,11 @@ Otomatik olarak Windows + R tuşlarına basar ve PowerShell'i açar.
 Arka planda psutil ve pyserial kütüphanelerini indirir.
 Terminale satır satır bir Python kodu yazar (Yazdığı kod, bilgisayarın CPU/RAM verilerini okuyup COM portuna gönderen bir döngüdür).
 Bilgisayar bu verileri STM32'ye geri gönderir, STM32 ise bu verileri alıp harici bir LCD ekranda anlık olarak gösterir.
+
 🛠️ 2. Kullanılan Donanım ve "Çift USB" Bağlantı Mimarisi
 Mikrodenetleyici: STM32 Nucleo-144 (NUCLEO-F439ZI)
-Gösterge (Opsiyonel): 16x2 Karakter LCD ve PCF8574 I2C Genişletici.
+Gösterge: 16x2 Karakter LCD ve PCF8574 I2C Genişletici.
+
 ⚠️ Kritik Donanım Detayı: Çift USB Portu Kullanımı
 STM32 Nucleo-144 kartları üzerinde iki adet USB portu bulunur ve bu proje için her ikisinin de rolü farklıdır:
 
@@ -39,25 +41,26 @@ c
 
 /* Core/Src/keyboard_helper.c - Satır ~195 */
 REPL_Line("pip install psutil pyserial", 12000); // 12000 ms (12 Saniye)
-📌 Kullanıcı Geliştirme Notu: Eğer internetiniz yavaşsa ve siyah PowerShell ekranında indirme işlemi bitmeden STM32 diğer kodları yazmaya başlıyorsa, buradaki 12000 değerini örneğin 25000 (25 saniye) yaparak indirme işlemine ekstra pay (süre) verebilirsiniz. Eğer kütüphaneler zaten bilgisayarınızda yüklüyse bu süreyi 3000'e düşürerek süreci hızlandırabilirsiniz.
 
+Kullanıcı Geliştirme Notu: Eğer internetiniz yavaşsa ve siyah PowerShell ekranında indirme işlemi bitmeden STM32 diğer kodları yazmaya başlıyorsa, buradaki 12000 değerini örneğin 25000 (25 saniye) yaparak indirme işlemine ekstra pay (süre) verebilirsiniz. Eğer kütüphaneler zaten bilgisayarınızda yüklüyse bu süreyi 3000'e düşürerek süreci hızlandırabilirsiniz.
+------------------------------------------
 Aynı şekilde harflerin yazılma hızını artırmak isterseniz Keyboard_SendKey içindeki HAL_Delay(3) değerini 1 veya 2 yaparak şimşek hızında yazım elde edebilirsiniz.
 
 🚀 5. Kurulum ve Çalıştırma Adımları
 Donanım Bağlantılarını Yapın:
 Birinci Micro-USB kablosunu STM32'nin Üst (ST-LINK) portuna takarak bilgisayara bağlayın (Güç ve kod yükleme için).
 İkinci Micro-USB kablosunu STM32'nin Alt (USER USB) portuna takarak bilgisayara bağlayın (Klavye/Seri Port iletişimi için).
-(Opsiyonel) I2C LCD ekranı PB8 (SCL) ve PB9 (SDA) pinlerine takın.
+I2C LCD ekranı PB8 (SCL) ve PB9 (SDA) pinlerine takın.
 Kodu Derleyin ve Yükleyin:
 Projeyi STM32CubeIDE ile açın.
 Eğer internet hızınıza göre pip install süresini artırmak isterseniz keyboard_helper.c dosyasındaki ayarı yapın.
-Projeyi derleyin (Çekiç simgesi) ve karta flashlayın (Run).
-Sihri İzleyin!
+Projeyi derleyin ve karta flashlayın (Run).
+İzleyin!
 Kod karta yüklendiği an STM32 kendini resetler, alt USB portu üzerinden bilgisayarınıza bir klavye olarak bağlanır.
 Ekranda hiçbir şeye dokunmayın (Farenizi veya klavyenizi kullanmayın).
 STM32 otomatik olarak Win+R yapacak, PowerShell'i açacak, gerekli eklentileri indirecek ve "Designed by Ilke" imzalı Python kodunu yazarak çalıştıracaktır.
 Ekranda anlık RAM/CPU telemetrisini ve LCD ekranınızda sonuçları görebilirsiniz.
+
 🛠️ 6. Geliştiriciler İçin: Neler Eklenebilir?
-OLED Ekran Desteği: 16x2 LCD yerine SPI tabanlı bir OLED (Örn: SSD1306) takılarak çok daha şık bir CPU kullanım grafiği çizdirilebilir.
 Zararlı Yazılım (BadUSB) Güvenlik Araştırmaları: Bu mimari (HID Payload Injection), siber güvenlik alanında sistemlerin zafiyetlerini test etmek (Penetration Testing) amacıyla USB Rubber Ducky alternatifi olarak incelenebilir ve geliştirilebilir.
 Bu proje, donanım-yazılım senkronizasyonu ve USB yığıtlarının (Stack) derinlemesine incelenmesi amacıyla açık kaynak olarak sunulmuştur.
